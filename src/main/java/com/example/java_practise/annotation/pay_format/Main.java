@@ -20,6 +20,10 @@ public class Main {
         bankAPI.url();//不知道有什么用？仅仅是打印输出？log输出？
         StringBuilder stringBuilder = new StringBuilder();
 
+        System.out.println("==============");
+        System.out.println(api.getClass().getDeclaredFields());
+        System.out.println(api.getClass());
+        System.out.println("==============");
         Arrays.stream(api.getClass().getDeclaredFields()) //获得所有字段
                 .filter(field -> field.isAnnotationPresent(BankAPIField.class)) //查找标记了注解的字段
                 .sorted(Comparator.comparingInt(a -> a.getAnnotation(BankAPIField.class).order())) //根据注解中的order对字段排序
@@ -44,7 +48,7 @@ public class Main {
                             stringBuilder.append(String.format("%" + bankAPIField.length() + "s", value.toString()).replace(' ', '0'));
                             break;
                         }
-                        case "M": {
+                        case "M": {//不懂这个处理逻辑！
                             if (!(value instanceof BigDecimal))
                                 throw new RuntimeException(String.format("{} 的 {} 必须是BigDecimal", api, field));
                             stringBuilder.append(String.format("%0" + bankAPIField.length() + "d", ((BigDecimal) value).setScale(2, RoundingMode.DOWN).multiply(new BigDecimal("100")).longValue()));
@@ -59,8 +63,10 @@ public class Main {
         String param = stringBuilder.toString();
         long begin = System.currentTimeMillis();
         //发请求
+        //下面这个地址明显有问题怎么改？？？这个应该就是那个接口规范中的“baseUrl”，是应该自己写一个虚拟的服务端接口吧？
+        // 具体怎么写，还需要弄清没有用注解的时候怎么请求的，那个弄清怎么处理baseUrl了，这里一样。
         String result = Request.Post("http://localhost:45678/reflection" + bankAPI.url())
-                .bodyString(param, ContentType.APPLICATION_JSON)
+                .bodyString(param, ContentType.APPLICATION_JSON) //请求体body为Json字符串的文本类型
                 .execute().returnContent().asString();
 
         Logger logger = LogManager.getLogger();
@@ -80,4 +86,8 @@ public class Main {
         return remoteCall(request);
     }
 
+    public static void main(String[] args) throws IOException {
+        CreateUserAPI cuapi = new CreateUserAPI("user1", "122222222222222222", "11111111111", 12);
+        createUser(cuapi);
+    }
 }

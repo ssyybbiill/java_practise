@@ -11,6 +11,16 @@ public class CreateUserAPI extends AbstractAPI {
     private String mobile;
     @BankAPIField(order = 3, type = "N", length = 5)
     private int age;
+
+    public CreateUserAPI() {
+    }
+
+    public CreateUserAPI(String name, String identity, String mobile, int age) {
+        this.name = name;
+        this.identity = identity;
+        this.mobile = mobile;
+        this.age = age;
+    }
 }
 
 
