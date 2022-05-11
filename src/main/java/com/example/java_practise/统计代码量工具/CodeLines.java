@@ -7,8 +7,39 @@ import java.util.List;
 public class CodeLines {
     public static void main(String[] args) {
         String root = "D:\\java\\ideaProjects\\dynamic_validate";
+        root = "G:\\c_files\\VSCode\\2022-4-10code\\linux.tar\\linux\\fs";
+        root = "G:\\c_files\\VSCode\\2022-4-10code\\linux.tar\\linux";
+        root = "G:\\c_files\\VSCode\\2022-4-10code\\partition-kernel\\partition-guest\\drivers\\pguest";
+        root = "G:\\c_files\\VSCode\\2022-4-10code\\partition-kernel\\partition-guest\\drivers\\pguest";
+
         CodeLines o = new CodeLines();
-        o.printCodeLines(root);
+        //o.printCodeLines(root);
+        o.printCodeLinesLinux(root);
+    }
+
+    public void printCodeLinesLinux(String filePath) {
+
+        String type1 = "(.*\\.c$)";
+        String type2 = "(.*\\.h$)";
+
+        int[] r1 = readByType(filePath, type1);
+        int[] r2 = readByType(filePath, type2);
+        int[] sums = new int[4];
+        for (int j = 0; j < 4; j++) {
+            sums[j] = r1[j] + r2[j];
+        }
+
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.printf("  %-20s%-10s%-10s%-10s%-10s%-10s%14s\n", "Language", "files", "sumLines", "blank", "comment", "code", "code/sumLines");
+        System.out.println("----------------------------------------------------------------------------------------");
+        int s = r1[4] + r2[4];
+
+        System.out.printf("  %-20s%-10d%-10d%-10d%-10d%-10d%6.2f%%\n", ".c", r1[0], r1[4], r1[1], r1[2], r1[3], r1[3] * 100.0 / r1[4]);
+        System.out.printf("  %-20s%-10d%-10d%-10d%-10d%-10d%6.2f%%\n", ".h", r2[0], r2[4], r2[1], r2[2], r2[3], r2[3] * 100.0 / r2[4]);
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.printf("  %-20s%-10d%-10d%-10d%-10d%-10d%6.2f%%\n", "SUM", sums[0], s, sums[1], sums[2], sums[3], sums[3] * 100.0 / s);
+        System.out.println("----------------------------------------------------------------------------------------");
+
     }
 
     public void printCodeLines(String filePath) {
